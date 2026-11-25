@@ -1,6 +1,6 @@
 # L'Atelier Mya — site + cartes cadeaux (v3)
 
-**Hébergement :** pages sur **GitHub Pages** (domaine `lateliermya.fr`) ; base de données et fonctions serveur sur **Supabase** (Edge Functions).
+**Hébergement :** pages sur **Cloudflare Pages** (domaine `lateliermya.fr`, dépôt GitHub privé) ; base de données et fonctions serveur sur **Supabase** (Edge Functions).
 
 ## Ce qui a changé en v3
 
@@ -40,14 +40,15 @@ supabase/functions/            create-gift-card, stripe-webhook, gift-card-statu
 supabase/functions/_shared/    logique commune + catalogue.json (GÉNÉRÉ, vérification des prix)
 _outils/contenu_soins.py       ← soins, prix, avis, texte de Myriam, avant/après
 _outils/contenu_journal.py     ← articles du journal
-CNAME, .nojekyll               réglages GitHub Pages
+_headers, _redirects           en-têtes HTTP et redirections (Cloudflare Pages)
+_outils/construire-site.sh     prépare dist/ : seuls les fichiers du site sont publiés
 ```
 
 **Après toute modification de contenu ou de prix :**
 ```bash
 python3 _outils/generer_pages_soins.py
 ```
-Puis pousse sur GitHub. Si un **prix** a changé, redéploie aussi `create-gift-card` (voir l'étape 2) : le serveur vérifie les prix avec sa propre copie du catalogue.
+Puis pousse sur GitHub : Cloudflare republie le site automatiquement. Si un **prix** a changé, redéploie aussi `create-gift-card` (voir l'étape 2) : le serveur vérifie les prix avec sa propre copie du catalogue.
 
 ## Mise en service
 
@@ -96,22 +97,17 @@ Active **pg_cron** et **pg_net** (Database > Extensions). Remplace le secret dan
   - Événements : `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`
   - Récupère ensuite le **secret de signature** (`whsec_…`).
 
-### 5. GitHub Pages + domaine lateliermya.fr
-1. Dans le dépôt GitHub, va dans **Settings > Pages** : source = branche `main`, dossier `/ (root)`. Le fichier `CNAME` règle déjà le domaine.
-2. Chez le registrar du domaine (OVH, Gandi, IONOS…), configure le DNS :
-
-   | Type | Nom | Valeur |
-   |---|---|---|
-   | A | @ | 185.199.108.153 |
-   | A | @ | 185.199.109.153 |
-   | A | @ | 185.199.110.153 |
-   | A | @ | 185.199.111.153 |
-   | AAAA | @ | 2606:50c0:8000::153, 2606:50c0:8001::153, 2606:50c0:8002::153, 2606:50c0:8003::153 |
-   | CNAME | www | `lamoongit.github.io.` |
-
-   Supprime les anciens enregistrements A ou CNAME de `@` et `www` (par exemple la page « parking » du registrar).
-3. Une fois le DNS propagé (de quelques minutes à 24 h), coche **Enforce HTTPS** dans Settings > Pages.
-4. Recommandé : vérifie le domaine dans **Settings du compte > Pages > Verified domains**, pour que personne d'autre ne puisse l'utiliser sur GitHub.
+### 5. Cloudflare Pages + domaine lateliermya.fr
+1. Crée un compte gratuit sur cloudflare.com.
+2. **Ajoute le domaine** : **Add a domain** > `lateliermya.fr` > offre **Free**. Cloudflare importe la zone DNS d'OVH.
+   ⚠️ Vérifie que les lignes **MX**, **SPF**, **SRV**, les CNAME mail/smtp/imap/pop3/autoconfig/autodiscover, les DKIM OVH, `resend._domainkey`, `send`, `rsend` et `_dmarc` sont bien présentes (sinon recopie-les depuis OVH). Supprime les A/AAAA/TXT de parking OVH sur `@` et `www`. Les CNAME de messagerie doivent rester en **DNS only** (nuage gris).
+3. Sur OVH, dans **Noms de domaine > lateliermya.fr > Serveurs DNS > Modifier**, remplace les serveurs OVH par les deux serveurs indiqués par Cloudflare (`xxx.ns.cloudflare.com`). Le changement prend de quelques heures à 24 h.
+4. Dans **Workers & Pages > Create > Pages > Connect to Git**, choisis le dépôt `ateliermya` (il peut être **privé**) :
+   - Branche de production : `main`
+   - Build command : `sh _outils/construire-site.sh`
+   - Build output directory : `dist`
+5. Dans le projet Pages, ouvre **Custom domains** et ajoute `lateliermya.fr` puis `www.lateliermya.fr`. Cloudflare crée les entrées DNS et le certificat HTTPS tout seul.
+6. **Préprod protégée pour de vrai (recommandé)** : **Zero Trust > Access > Applications > Add > Self-hosted**, domaine `lateliermya.fr`, règle « Emails » avec ton adresse. L'accès se fait alors par un code reçu par email, gratuit jusqu'à 50 personnes. Tu peux ensuite retirer le verrou JavaScript (voir la checklist). ⚠️ Laisse en dehors de cette protection les adresses appelées par Stripe et Supabase : aucune ne passe par ce domaine, donc rien à faire de plus.
 
 ### 6. Réglages du site (`assets/config.js`)
 - `whatsapp` : numéro WhatsApp de Myriam (⚠️ **à confirmer**). Laisse `''` pour masquer le bouton.
@@ -122,15 +118,14 @@ Active **pg_cron** et **pg_net** (Database > Extensions). Remplace le secret dan
 - **Fiche Google Business** : ajoute le lien du site et les services.
 
 ## Checklist de mise en ligne
-- [ ] DNS de lateliermya.fr configuré et HTTPS actif sur GitHub Pages.
-- [ ] Verrou de préprod retiré : `LOCK = ""` dans le générateur (puis relancer), et suppression du bloc `siteLockOverlay` dans `index.html`, `mentions-legales.html` et `politique-confidentialite.html`. ⚠️ Le dépôt étant public, ce verrou ne protège rien : n'importe qui peut lire le mot de passe.
+- [ ] Domaine sur Cloudflare, `lateliermya.fr` et `www` ajoutés au projet Pages, HTTPS actif.
+- [ ] Verrou de préprod retiré : `LOCK = ""` dans le générateur (puis relancer), et suppression du bloc `siteLockOverlay` dans `index.html`, `mentions-legales.html` et `politique-confidentialite.html`. ⚠️ Ce verrou ne protège rien : le mot de passe se lit dans le code source des pages. Préfère Cloudflare Access (étape 5).
 - [ ] `ALLOW_SIMULATED_PAYMENT` supprimée, clés Stripe **live** en place.
 - [ ] Un achat test réel (puis remboursement dans Stripe et annulation dans `admin.html`).
 - [ ] Scan du QR code reçu depuis le téléphone de Myriam : la carte passe en « Utilisée ».
 
-## Limites de GitHub Pages
-- Pas d'en-têtes HTTP personnalisés : le `noindex` des pages internes passe par la balise `<meta name="robots">`, déjà présente dans chaque page.
-- Pas de redirections serveur : les anciennes URL de démo n'existent plus.
+## Bon à savoir
+- Seul le dossier `dist/` est publié : `_outils/`, `supabase/` et le README ne sont jamais accessibles en ligne.
 - La carte reçue par email est dessinée en HTML. L'image PNG téléchargeable se trouve sur la page de confirmation, accessible via un lien dans l'email.
 
 ## À faire valider par Myriam

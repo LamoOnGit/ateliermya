@@ -1,0 +1,4 @@
+# Redirections (Cloudflare Pages)
+/carte-cadeau-demo.html          /carte-cadeau.html  301
+/carte-cadeau-demo-succes.html   /carte-cadeau.html  301
+/admin-demo.html                 /admin.html         301

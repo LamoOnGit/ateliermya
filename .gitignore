@@ -4,3 +4,4 @@ _outils/__pycache__/
 .env
 .env.*
 supabase/.temp/
+dist/
