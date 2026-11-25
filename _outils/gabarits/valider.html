@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validation carte cadeau — L’Atelier Mya</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FAF6F1">
+<link rel="icon" type="image/svg+xml" href="<!--FAVICON-->">
+<!--FONTS-->
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/composants.css">
+<link rel="stylesheet" href="assets/cadeau.css">
+</head>
+<body>
+<!--LOCK-->
+<div class="tool">
+  <div class="tool-head">
+    <a class="logo" href="index.html">L'Atelier <em>Mya</em></a>
+    <a class="link" href="admin.html" style="font-size:0.85rem">Suivi des cartes →</a>
+  </div>
+  <div class="tool-box narrow" id="view" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="assets/config.js"></script>
+<script>
+/*
+ * Page ouverte en scannant le QR code de l'email.
+ *  • Une cliente qui scanne son propre QR code voit simplement un message :
+ *    rien n'est validé sans être connectée en tant qu'administratrice.
+ *  • Myriam (connectée) : la carte est validée immédiatement, en une fois.
+ *    Une erreur ? Bouton "Annuler" pendant 15 minutes.
+ */
+(function () {
+  var CFG = window.MYA_CONFIG;
+  var sb = supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+  var view = document.getElementById('view');
+  var code = (new URLSearchParams(location.search).get('c') || '').toUpperCase().trim();
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function dateFR(d, withTime) { return new Date(d).toLocaleString('fr-FR', withTime ? { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' } : { day: 'numeric', month: 'long', year: 'numeric' }); }
+  function euros(c) { return (c / 100).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }); }
+  function title(c) { return c.kind === 'soin' ? esc(c.soin_name) + ' <small style="color:var(--muted)">· ' + esc(c.soin_family) + '</small>' : euros(c.amount_cents); }
+  function details(c) {
+    return '<dl class="kv">' +
+      '<dt>Code</dt><dd>' + esc(c.code) + '</dd>' +
+      (c.recipient_name ? '<dt>Pour</dt><dd>' + esc(c.recipient_name) + '</dd>' : '') +
+      '<dt>Offerte par</dt><dd>' + esc(c.buyer_name || '—') + '</dd>' +
+      (c.kind === 'soin' ? '<dt>Durée</dt><dd>' + esc(c.soin_duration) + '</dd>' : '') +
+      '<dt>Valable jusqu’au</dt><dd>' + dateFR(c.expires_at) + '</dd>' +
+      '</dl>';
+  }
+
+  if (!/^MYA-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
+    view.innerHTML = '<div class="verdict ko"><div class="verdict-ico">?</div><h1>QR code illisible</h1><p>Le lien ne contient pas de code valide.</p></div>' +
+      '<p style="text-align:center;margin-top:1rem"><a class="act ghost" href="admin.html" style="text-decoration:none;display:inline-block">Rechercher la carte à la main</a></p>';
+    return;
+  }
+
+  function showLogin(err) {
+    view.innerHTML =
+      '<div class="verdict warn" style="padding-top:0"><div class="verdict-ico">🎁</div><h1>Carte cadeau</h1>' +
+      '<p class="big">' + esc(code) + '</p>' +
+      '<p>Vous êtes cliente ? Présentez simplement ce QR code à l’institut le jour de votre soin : il y sera scanné. Réservation sur Planity ou au <a class="link" href="tel:+33638467414">06 38 46 74 14</a>.</p></div>' +
+      '<hr style="border:none;border-top:1px solid var(--line);margin:1.4rem 0">' +
+      '<form id="login"><p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.8rem;text-transform:uppercase;letter-spacing:0.12em">Espace institut</p>' +
+      (err ? '<div class="alert alert-error">' + esc(err) + '</div>' : '') +
+      '<div class="field"><label for="em">Email</label><input id="em" type="email" autocomplete="username" required></div>' +
+      '<div class="field"><label for="pw">Mot de passe</label><input id="pw" type="password" autocomplete="current-password" required></div>' +
+      '<button class="btn btn-primary btn-block" type="submit">Se connecter et valider la carte</button></form>';
+    document.getElementById('login').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var r = await sb.auth.signInWithPassword({ email: document.getElementById('em').value, password: document.getElementById('pw').value });
+      if (r.error) return showLogin('Identifiants incorrects.');
+      redeem();
+    });
+  }
+
+  async function redeem() {
+    view.innerHTML = '<div class="spinner" aria-hidden="true"></div><p style="text-align:center">Validation…</p>';
+    var r = await sb.rpc('redeem_gift_card', { p_code: code });
+    if (r.error) {
+      if (/not_admin/.test(r.error.message)) return showLogin('Ce compte n’a pas accès aux cartes cadeaux.');
+      view.innerHTML = '<div class="verdict ko"><div class="verdict-ico">!</div><h1>Erreur</h1><p>' + esc(r.error.message) + '</p></div>';
+      return;
+    }
+    var d = r.data, c = d.card;
+    if (d.ok) {
+      if (navigator.vibrate) navigator.vibrate(80);
+      view.innerHTML = '<div class="verdict ok"><div class="verdict-ico">✓</div><h1>Carte validée</h1><p class="big">' + title(c) + '</p>' +
+        (c.kind === 'montant' ? '<p>Montant utilisé : ' + euros(d.consumed_cents) + '</p>' : '') + '</div>' + details(c) +
+        '<div class="acts" style="justify-content:center"><button class="act ghost" id="undo">Annuler la validation</button></div>' +
+        '<p style="text-align:center;font-size:0.78rem;color:var(--muted);margin-top:0.6rem">Possible pendant 15 minutes en cas d’erreur.</p>';
+      document.getElementById('undo').addEventListener('click', async function () {
+        if (!confirm('Annuler la validation de cette carte ?')) return;
+        var u = await sb.rpc('undo_redemption', { p_code: code });
+        if (u.data && u.data.ok) {
+          view.innerHTML = '<div class="verdict warn"><div class="verdict-ico">↺</div><h1>Validation annulée</h1><p>La carte est de nouveau active.</p></div>' + details(u.data.card);
+        } else alert('Impossible d’annuler (plus de 15 minutes ?). Voir le suivi des cartes.');
+      });
+      return;
+    }
+    var msgs = {
+      not_found: ['Carte inconnue', 'Aucune carte ne correspond à ce code.'],
+      used: ['Déjà utilisée', c && c.redeemed_at ? 'Cette carte a été validée le ' + dateFR(c.redeemed_at, true) + '.' : 'Cette carte a déjà été utilisée.'],
+      expired: ['Carte expirée', c ? 'Elle était valable jusqu’au ' + dateFR(c.expires_at) + '.' : ''],
+      cancelled: ['Carte annulée', 'Cette carte a été annulée (remboursement).'],
+      pending: ['Paiement non confirmé', 'Le paiement de cette carte n’a pas abouti.']
+    };
+    var m = msgs[d.reason] || ['Carte non valable', d.reason];
+    view.innerHTML = '<div class="verdict ' + (d.reason === 'used' ? 'warn' : 'ko') + '"><div class="verdict-ico">' + (d.reason === 'used' ? '!' : '✕') + '</div><h1>' + m[0] + '</h1>' +
+      (c ? '<p class="big">' + title(c) + '</p>' : '') + '<p>' + m[1] + '</p></div>' + (c ? details(c) : '');
+  }
+
+  sb.auth.getSession().then(function (r) { if (r.data.session) redeem(); else showLogin(); });
+})();
+</script>
+</body>
+</html>

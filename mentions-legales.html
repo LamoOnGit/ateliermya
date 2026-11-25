@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentions légales — L'Atelier Mya</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://lateliermya.fr/mentions-legales.html">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--ivoire:#F5F1EA;--brun:#3D2B1F;--terra:#C4856A;--terra-dark:#8B5A43;--muted:#8A7566;--blanc:#FEFCF9;}
+body{font-family:'DM Sans',sans-serif;background:var(--ivoire);color:var(--brun);line-height:1.75}
+.wrap{max-width:720px;margin:0 auto;padding:4rem 1.5rem 6rem}
+.back{display:inline-block;margin-bottom:2rem;color:var(--terra-dark);text-decoration:none;font-size:0.85rem;border-bottom:1px solid rgba(139,90,67,0.3)}
+h1{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:2rem;margin-bottom:2.5rem;color:var(--brun)}
+h2{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:1.25rem;margin:2.2rem 0 0.8rem;color:var(--terra-dark)}
+p, li{font-size:0.92rem;color:var(--brun);margin-bottom:0.9rem}
+ul{padding-left:1.3rem}
+a{color:var(--terra-dark)}
+.placeholder{background:#FBF3EF;border-left:3px solid var(--terra);padding:0.9rem 1.1rem;font-size:0.85rem;color:var(--muted);margin:1rem 0;border-radius:0 6px 6px 0}
+</style>
+</head>
+<body>
+<!-- ─── Verrou d'accès temporaire (test uniquement, pas une vraie sécurité) ─── -->
+<div id="siteLockOverlay" style="position:fixed;inset:0;z-index:99999;background:#37291D;color:#FDFAF7;display:flex;align-items:center;justify-content:center;font-family:sans-serif;">
+  <div style="text-align:center;max-width:320px;padding:2rem">
+    <div style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#C4856A;margin-bottom:1rem">Site en cours de développement</div>
+    <input type="text" id="siteLockUser" placeholder="Nom d'utilisateur" autocomplete="off" style="width:100%;padding:0.7rem 1rem;border-radius:6px;border:none;margin-bottom:0.6rem;font-size:0.95rem;box-sizing:border-box">
+    <input type="password" id="siteLockInput" placeholder="Mot de passe" style="width:100%;padding:0.7rem 1rem;border-radius:6px;border:none;margin-bottom:0.8rem;font-size:0.95rem;box-sizing:border-box">
+    <button id="siteLockBtn" style="width:100%;padding:0.7rem;border-radius:999px;border:none;background:#8B5A43;color:#FDFAF7;cursor:pointer;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase">Entrer</button>
+    <div id="siteLockError" style="color:#E8A0A0;font-size:0.78rem;margin-top:0.7rem;display:none">Identifiants incorrects</div>
+  </div>
+</div>
+<script>
+(function () {
+  // ⚠️ Ceci n'est PAS une vraie sécurité : ces valeurs sont visibles dans le
+  // code source par quiconque ouvre les outils développeur. Ça bloque les
+  // visiteurs occasionnels et les moteurs de recherche, pas un attaquant motivé.
+  var SITE_USERNAME = 'lamoagency';
+  var SITE_PASSWORD = 'OHrmZRRp06_eqyGV';
+  if (sessionStorage.getItem('mya_site_unlocked') === '1') {
+    document.getElementById('siteLockOverlay').remove();
+    return;
+  }
+  function tryUnlock() {
+    var user = document.getElementById('siteLockUser').value;
+    var pass = document.getElementById('siteLockInput').value;
+    if (user === SITE_USERNAME && pass === SITE_PASSWORD) {
+      sessionStorage.setItem('mya_site_unlocked', '1');
+      document.getElementById('siteLockOverlay').remove();
+    } else {
+      document.getElementById('siteLockError').style.display = 'block';
+    }
+  }
+  document.getElementById('siteLockBtn').addEventListener('click', tryUnlock);
+  document.getElementById('siteLockInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') tryUnlock();
+  });
+  document.getElementById('siteLockUser').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') document.getElementById('siteLockInput').focus();
+  });
+})();
+</script>
+
+<div class="wrap">
+  <a href="index.html" class="back">← Retour au site</a>
+  <h1>Mentions légales</h1>
+
+  <h2>Éditeur du site</h2>
+  <p>
+    L'Atelier Mya<br>
+    24 Av. Charlie Chaplin, 91700 Sainte-Geneviève-des-Bois<br>
+    Téléphone : 06 38 46 74 14
+  </p>
+  <div class="placeholder">
+    À compléter : forme juridique (auto-entreprise, SASU...), numéro SIRET, et le nom de la
+    personne responsable de la publication — obligatoires sur une page de mentions légales en France.
+  </div>
+
+  <h2>Hébergement</h2>
+  <p>
+    Ce site est hébergé par GitHub, Inc. (service GitHub Pages)<br>
+    88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis<br>
+    <a href="https://pages.github.com" target="_blank" rel="noopener">pages.github.com</a>
+  </p>
+  <p>
+    La base de données et les fonctions serveur (cartes cadeaux) sont hébergées par Supabase Inc.,
+    970 Toa Payoh North #07-04, Singapour 318992.
+  </p>
+
+  <h2>Propriété intellectuelle</h2>
+  <p>
+    L'ensemble des contenus présents sur ce site (textes, images, logo) est la propriété de
+    L'Atelier Mya, sauf mention contraire. Toute reproduction, même partielle, est soumise à
+    autorisation préalable.
+  </p>
+
+  <h2>Activité</h2>
+  <p>
+    L'Atelier Mya est un institut de bien-être proposant des soins de relaxation et d'amincissement
+    (Head Spa, Kobido, drainage lymphatique, madérothérapie...). Les réservations s'effectuent en
+    ligne via Planity.
+  </p>
+
+  <h2>Cartes cadeaux</h2>
+  <p>
+    Les cartes cadeaux achetées sur ce site sont valables 6 mois à compter de leur date d'achat.
+    Elles sont utilisables pour tout soin proposé par l'institut, dans la limite du solde disponible.
+    Toute carte non utilisée à l'expiration de ce délai n'est plus valable.
+  </p>
+
+  <h2>Contact</h2>
+  <p>Pour toute question relative à ce site ou à son contenu : 06 38 46 74 14.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merci — Votre carte cadeau L’Atelier Mya</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="<!--FAVICON-->">
+<!--FONTS-->
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/composants.css">
+<link rel="stylesheet" href="assets/cadeau.css">
+</head>
+<body data-no-wa>
+<!--LOCK-->
+<!--NAV-->
+<main>
+<section class="svc-hero svc-hero-simple">
+  <div class="wrap">
+    <div class="done" id="state" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Confirmation du paiement…</p>
+    </div>
+  </div>
+</section>
+</main>
+<!--FOOTER-->
+<script src="assets/config.js"></script>
+<script src="lib/giftCardDraw.js"></script>
+<script>
+(function () {
+  var box = document.getElementById('state');
+  var ref = new URLSearchParams(location.search).get('ref');
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function message(title, text) {
+    box.innerHTML = '<div class="eyebrow">Carte cadeau</div><h1>' + title + '</h1><p class="lead" style="margin:0 auto 1.5rem">' + text + '</p>' +
+      '<div class="btns"><a class="btn btn-ghost" href="carte-cadeau.html">Offrir une carte</a><a class="btn btn-primary" href="tel:+33638467414">Appeler l’institut</a></div>';
+  }
+  if (!ref) return message('Lien incomplet', 'Retrouvez votre carte cadeau dans l’email de confirmation.');
+
+  var tries = 0;
+  async function poll() {
+    tries++;
+    try {
+      var res = await fetch(MYA_CONFIG.functionsUrl + '/gift-card-status?ref=' + encodeURIComponent(ref), { cache: 'no-store' });
+      var d = await res.json();
+      if (!res.ok) return message('Carte introuvable', esc(d.error || 'Retrouvez votre carte dans l’email de confirmation.'));
+      if (d.status === 'pending') {
+        if (tries < 20) return setTimeout(poll, 2000);
+        return message('Paiement en cours de validation', 'Votre banque n’a pas encore confirmé le paiement. Vous recevrez la carte par email dès que c’est fait.');
+      }
+      if (d.status === 'cancelled') return message('Paiement non abouti', 'Aucun montant n’a été débité. Vous pouvez recommencer votre commande.');
+      render(d);
+    } catch (e) {
+      if (tries < 5) return setTimeout(poll, 2000);
+      message('Un souci de connexion', 'Votre paiement est bien pris en compte si vous avez été débitée : la carte arrive par email.');
+    }
+  }
+
+  function render(d) {
+    var dest = d.recipientEmail
+      ? (d.sendAt && new Date(d.sendAt) > new Date()
+          ? ' Elle sera aussi envoyée à <strong>' + esc(d.recipientEmail) + '</strong> le ' + new Date(d.sendAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) + '.'
+          : ' Elle a aussi été envoyée à <strong>' + esc(d.recipientEmail) + '</strong>.')
+      : '';
+    box.innerHTML =
+      '<div class="eyebrow" style="justify-content:center">Paiement confirmé</div>' +
+      '<h1>Merci ! <em>Votre carte est prête.</em></h1>' +
+      '<p class="lead" style="margin:0 auto">Un email avec la carte et son <strong>QR code</strong> vient d’être envoyé à <strong>' + esc(d.buyerEmail) + '</strong>.' + dest + ' Le jour du soin, le QR code est scanné à l’institut.</p>' +
+      '<canvas id="card" width="1000" height="600" aria-label="Votre carte cadeau, code ' + esc(d.code) + '"></canvas>' +
+      '<div class="btns"><a class="btn btn-primary" id="dl" download="carte-cadeau-atelier-mya.png">Télécharger la carte</a>' +
+      '<button type="button" class="btn btn-ghost" id="print">Imprimer</button></div>' +
+      '<p class="article-meta" style="margin-top:1.5rem">Pensez à vérifier vos courriers indésirables. Une question ? <a class="link" href="tel:+33638467414">06 38 46 74 14</a></p>';
+    var canvas = document.getElementById('card');
+    var fonts = (document.fonts && document.fonts.load) ? Promise.all([document.fonts.load('italic 500 52px Fraunces'), document.fonts.load('500 32px Fraunces')]) : Promise.resolve();
+    fonts.then(function () {
+      MyaGiftCard.draw(canvas.getContext('2d'), d, { serif: 'Fraunces, serif', sans: '"DM Sans", sans-serif' });
+      var url = canvas.toDataURL('image/png');
+      document.getElementById('dl').href = url;
+      document.getElementById('print').addEventListener('click', function () {
+        var w = window.open('', '_blank');
+        if (!w) return;
+        w.document.write('<title>Carte cadeau — L’Atelier Mya</title><body style="margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="' + url + '" style="max-width:100%" onload="window.print()"></body>');
+        w.document.close();
+      });
+    });
+    try { window.plausible && window.plausible('Carte cadeau — achetée', { props: { type: d.kind } }); } catch (e) {}
+  }
+  poll();
+})();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

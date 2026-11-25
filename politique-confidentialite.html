@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Politique de confidentialité — L'Atelier Mya</title>
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://lateliermya.fr/politique-confidentialite.html">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--ivoire:#F5F1EA;--brun:#3D2B1F;--terra:#C4856A;--terra-dark:#8B5A43;--muted:#8A7566;--blanc:#FEFCF9;}
+body{font-family:'DM Sans',sans-serif;background:var(--ivoire);color:var(--brun);line-height:1.75}
+.wrap{max-width:720px;margin:0 auto;padding:4rem 1.5rem 6rem}
+.back{display:inline-block;margin-bottom:2rem;color:var(--terra-dark);text-decoration:none;font-size:0.85rem;border-bottom:1px solid rgba(139,90,67,0.3)}
+h1{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:2rem;margin-bottom:0.8rem;color:var(--brun)}
+.updated{font-size:0.8rem;color:var(--muted);margin-bottom:2.5rem}
+h2{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:1.25rem;margin:2.2rem 0 0.8rem;color:var(--terra-dark)}
+p, li{font-size:0.92rem;color:var(--brun);margin-bottom:0.9rem}
+ul{padding-left:1.3rem}
+a{color:var(--terra-dark)}
+table{width:100%;border-collapse:collapse;font-size:0.85rem;margin:1rem 0}
+th, td{text-align:left;padding:0.6rem 0.8rem;border-bottom:1px solid rgba(196,133,106,0.25)}
+th{color:var(--terra-dark);font-weight:500}
+</style>
+</head>
+<body>
+<!-- ─── Verrou d'accès temporaire (test uniquement, pas une vraie sécurité) ─── -->
+<div id="siteLockOverlay" style="position:fixed;inset:0;z-index:99999;background:#37291D;color:#FDFAF7;display:flex;align-items:center;justify-content:center;font-family:sans-serif;">
+  <div style="text-align:center;max-width:320px;padding:2rem">
+    <div style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#C4856A;margin-bottom:1rem">Site en cours de développement</div>
+    <input type="text" id="siteLockUser" placeholder="Nom d'utilisateur" autocomplete="off" style="width:100%;padding:0.7rem 1rem;border-radius:6px;border:none;margin-bottom:0.6rem;font-size:0.95rem;box-sizing:border-box">
+    <input type="password" id="siteLockInput" placeholder="Mot de passe" style="width:100%;padding:0.7rem 1rem;border-radius:6px;border:none;margin-bottom:0.8rem;font-size:0.95rem;box-sizing:border-box">
+    <button id="siteLockBtn" style="width:100%;padding:0.7rem;border-radius:999px;border:none;background:#8B5A43;color:#FDFAF7;cursor:pointer;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase">Entrer</button>
+    <div id="siteLockError" style="color:#E8A0A0;font-size:0.78rem;margin-top:0.7rem;display:none">Identifiants incorrects</div>
+  </div>
+</div>
+<script>
+(function () {
+  // ⚠️ Ceci n'est PAS une vraie sécurité : ces valeurs sont visibles dans le
+  // code source par quiconque ouvre les outils développeur. Ça bloque les
+  // visiteurs occasionnels et les moteurs de recherche, pas un attaquant motivé.
+  var SITE_USERNAME = 'lamoagency';
+  var SITE_PASSWORD = 'OHrmZRRp06_eqyGV';
+  if (sessionStorage.getItem('mya_site_unlocked') === '1') {
+    document.getElementById('siteLockOverlay').remove();
+    return;
+  }
+  function tryUnlock() {
+    var user = document.getElementById('siteLockUser').value;
+    var pass = document.getElementById('siteLockInput').value;
+    if (user === SITE_USERNAME && pass === SITE_PASSWORD) {
+      sessionStorage.setItem('mya_site_unlocked', '1');
+      document.getElementById('siteLockOverlay').remove();
+    } else {
+      document.getElementById('siteLockError').style.display = 'block';
+    }
+  }
+  document.getElementById('siteLockBtn').addEventListener('click', tryUnlock);
+  document.getElementById('siteLockInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') tryUnlock();
+  });
+  document.getElementById('siteLockUser').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') document.getElementById('siteLockInput').focus();
+  });
+})();
+</script>
+
+<div class="wrap">
+  <a href="index.html" class="back">← Retour au site</a>
+  <h1>Politique de confidentialité</h1>
+  <p class="updated">Dernière mise à jour : novembre 2026</p>
+
+  <h2>Quelles données sont collectées</h2>
+  <p>Ce site collecte des données personnelles uniquement dans les cas suivants :</p>
+  <table>
+    <tr><th>Où</th><th>Données collectées</th><th>Pourquoi</th></tr>
+    <tr><td>Achat d'une carte cadeau</td><td>Nom et email de l'acheteur ; prénom, email (optionnel) et message (optionnel) pour la personne à qui la carte est offerte ; date d'envoi souhaitée</td><td>Créer la carte cadeau, l'envoyer par email (à vous et, si vous le demandez, à la personne), envoyer un rappel avant son expiration</td></tr>
+    <tr><td>Paiement</td><td>Données de paiement (carte bancaire, Apple Pay, Google Pay)</td><td>Encaisser la carte cadeau. Ces données sont saisies directement chez Stripe : L'Atelier Mya n'y a jamais accès</td></tr>
+  </table>
+  <p>
+    Il n'y a ni formulaire de contact, ni compte client, ni cookie publicitaire sur le site.
+    La prise de rendez-vous se fait sur Planity, qui dispose de sa propre politique de confidentialité.
+  </p>
+
+  <h2>Prestataires (sous-traitants)</h2>
+  <ul>
+    <li><strong>Supabase</strong> : base de données et fonctions serveur des cartes cadeaux.</li>
+    <li><strong>Stripe</strong> : paiement sécurisé.</li>
+    <li><strong>Resend</strong> : envoi des emails (carte cadeau, rappel avant expiration).</li>
+    <li><strong>GitHub Pages</strong> : hébergement du site.</li>
+  </ul>
+  <p>Ces prestataires agissent uniquement pour le compte de L'Atelier Mya et n'utilisent pas vos données à d'autres fins.</p>
+
+  <h2>Mesure d'audience et contenus tiers</h2>
+  <p>
+    La fréquentation du site peut être mesurée avec <strong>Plausible Analytics</strong>, un outil
+    qui ne dépose aucun cookie et ne collecte aucune donnée personnelle (statistiques anonymes et agrégées).
+  </p>
+  <p>
+    La carte <strong>Google Maps</strong> ne s'affiche que si vous cliquez sur « Afficher la carte » :
+    Google peut alors déposer des cookies. Les avis Google et les publications Instagram affichés
+    sur le site sont récupérés par notre serveur, sans contact entre votre navigateur et ces services.
+    Le bouton WhatsApp ouvre l'application WhatsApp, soumise à sa propre politique de confidentialité.
+  </p>
+
+  <h2>Durée de conservation</h2>
+  <p>
+    Les informations liées à une carte cadeau (noms, emails, soin ou montant, code, message) sont
+    conservées pendant sa validité (6 mois), puis archivées pendant la durée légale de conservation
+    des pièces comptables. Une commande non payée est supprimée automatiquement au bout de 3 jours.
+  </p>
+
+  <h2>Vos droits</h2>
+  <p>
+    Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un
+    droit d'accès, de rectification, d'effacement et de portabilité de vos données personnelles,
+    ainsi que du droit de vous opposer à leur traitement.
+  </p>
+  <p>
+    Pour exercer ces droits, contactez L'Atelier Mya au 06 38 46 74 14, en précisant votre
+    demande et l'email utilisé lors de votre commande.
+  </p>
+
+  <h2>Partage des données</h2>
+  <p>
+    Vos données ne sont ni vendues, ni louées, ni partagées avec des tiers à des fins commerciales.
+    Elles ne sont utilisées que pour le bon fonctionnement du service de cartes cadeaux décrit
+    ci-dessus.
+  </p>
+
+  <h2>Réclamation</h2>
+  <p>
+    Si vous estimez que vos droits ne sont pas respectés, vous pouvez adresser une réclamation
+    à la CNIL (Commission Nationale de l'Informatique et des Libertés) —
+    <a href="https://www.cnil.fr" target="_blank">cnil.fr</a>.
+  </p>
+</div>
+</body>
+</html>

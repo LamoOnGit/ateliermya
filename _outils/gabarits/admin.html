@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi des cartes cadeaux — L’Atelier Mya</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="<!--FAVICON-->">
+<!--FONTS-->
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/composants.css">
+<link rel="stylesheet" href="assets/cadeau.css">
+</head>
+<body>
+<!--LOCK-->
+<div class="tool">
+  <div class="tool-head">
+    <a class="logo" href="index.html">L'Atelier <em>Mya</em></a>
+    <button class="back-link" id="logout" hidden>Déconnexion</button>
+  </div>
+
+  <div class="tool-box narrow" id="loginBox" hidden>
+    <h1>Suivi des cartes cadeaux</h1>
+    <form id="login">
+      <div id="loginErr" class="alert alert-error" hidden></div>
+      <div class="field"><label for="em">Email</label><input id="em" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="pw">Mot de passe</label><input id="pw" type="password" autocomplete="current-password" required></div>
+      <button class="btn btn-primary btn-block" type="submit">Se connecter</button>
+    </form>
+  </div>
+
+  <div class="tool-box" id="dash" hidden>
+    <h1>Cartes cadeaux</h1>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:1.2rem">Le plus simple : scanner le QR code de la cliente avec l’appareil photo du téléphone, la carte est validée automatiquement. Sinon, recherchez-la ici.</p>
+    <form class="search-row" id="searchForm">
+      <input id="q" placeholder="Code MYA-XXXX-XXXX, nom ou email" autocomplete="off" aria-label="Rechercher une carte">
+      <button type="submit">Rechercher</button>
+    </form>
+    <div id="msg" class="alert" hidden></div>
+    <div id="out"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="assets/config.js"></script>
+<script>
+(function () {
+  var CFG = window.MYA_CONFIG;
+  var sb = supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+  var $ = function (id) { return document.getElementById(id); };
+  // Tout ce qui vient de la base est échappé avant affichage (noms et messages saisis par le public)
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function euros(c) { return (c / 100).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' }); }
+  function dateFR(d, t) { return d ? new Date(d).toLocaleString('fr-FR', t ? { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' } : { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'; }
+  var LABEL = { pending: 'En attente', active: 'Active', used: 'Utilisée', expired: 'Expirée', cancelled: 'Annulée' };
+  function status(s) { return '<span class="status ' + esc(s) + '">' + (LABEL[s] || esc(s)) + '</span>'; }
+  function what(c) { return c.kind === 'soin' ? esc(c.soin_name) + ' <small>· ' + esc(c.soin_family) + '</small>' : 'Montant ' + euros(c.amount_cents); }
+  function info(t, kind) { var m = $('msg'); m.className = 'alert alert-' + (kind || 'info'); m.textContent = t; m.hidden = !t; }
+
+  function showLogin() { $('loginBox').hidden = false; $('dash').hidden = true; $('logout').hidden = true; }
+  async function showDash() {
+    $('loginBox').hidden = true; $('dash').hidden = false; $('logout').hidden = false;
+    var code = new URLSearchParams(location.search).get('code');
+    if (code) { $('q').value = code; search(); } else listRecent();
+  }
+
+  $('login').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var r = await sb.auth.signInWithPassword({ email: $('em').value, password: $('pw').value });
+    if (r.error) { $('loginErr').textContent = 'Identifiants incorrects.'; $('loginErr').hidden = false; return; }
+    showDash();
+  });
+  $('logout').addEventListener('click', async function () { await sb.auth.signOut(); location.href = 'admin.html'; });
+
+  function renderList(cards, title) {
+    if (!cards.length) { $('out').innerHTML = '<p style="color:var(--muted)">Aucune carte.</p>'; return; }
+    $('out').innerHTML = (title ? '<h2 class="serif" style="font-weight:400;font-size:1.2rem;margin:1rem 0 0.5rem">' + title + '</h2>' : '') +
+      '<table class="list"><thead><tr><th>Carte</th><th>Pour / de</th><th class="hide-m">Achat</th><th>Statut</th></tr></thead><tbody>' +
+      cards.map(function (c, i) {
+        return '<tr data-i="' + i + '" tabindex="0"><td>' + what(c) + '<br><small>' + esc(c.code) + '</small></td>' +
+          '<td>' + esc(c.recipient_name || '—') + '<br><small>de ' + esc(c.buyer_name || '—') + '</small></td>' +
+          '<td class="hide-m">' + dateFR(c.paid_at || c.created_at) + '</td><td>' + status(c.status) + '</td></tr>';
+      }).join('') + '</tbody></table>';
+    $('out').querySelectorAll('tr[data-i]').forEach(function (tr) {
+      var open = function () { openCard(cards[+tr.dataset.i], cards, title); };
+      tr.addEventListener('click', open);
+      tr.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+    });
+  }
+
+  async function listRecent() {
+    info('');
+    var r = await sb.from('gift_cards').select('*').neq('status', 'pending').order('created_at', { ascending: false }).limit(30);
+    if (r.error) return info(/permission|policy/i.test(r.error.message) ? 'Ce compte n’a pas accès aux cartes (table admins).' : r.error.message, 'error');
+    renderList(r.data, '30 dernières cartes');
+  }
+
+  async function search() {
+    var q = $('q').value.trim();
+    info('');
+    if (!q) return listRecent();
+    var r;
+    if (/^MYA-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(q)) {
+      r = await sb.from('gift_cards').select('*').eq('code', q.toUpperCase());
+    } else {
+      var like = '"%' + q.replace(/[%_,()"\\]/g, ' ') + '%"';
+      r = await sb.from('gift_cards').select('*').or('buyer_name.ilike.' + like + ',recipient_name.ilike.' + like + ',buyer_email.ilike.' + like + ',recipient_email.ilike.' + like).order('created_at', { ascending: false }).limit(50);
+    }
+    if (r.error) return info(r.error.message, 'error');
+    if (r.data.length === 1) return openCard(r.data[0]);
+    if (!r.data.length) { $('out').innerHTML = ''; return info('Aucune carte trouvée.', 'error'); }
+    renderList(r.data, r.data.length + ' cartes trouvées');
+  }
+  $('searchForm').addEventListener('submit', function (e) { e.preventDefault(); search(); });
+
+  async function openCard(c, fromList, listTitle) {
+    var h = await sb.from('gift_card_redemptions').select('*').eq('gift_card_id', c.id).order('redeemed_at', { ascending: false });
+    var hist = h.data || [];
+    var expired = c.status === 'active' && new Date(c.expires_at) < new Date();
+    var canUse = c.status === 'active' && !expired;
+    var recentUse = hist.length && (Date.now() - new Date(hist[0].redeemed_at)) < 15 * 60e3;
+    $('out').innerHTML =
+      '<button class="back-link" id="back">← Retour</button>' +
+      '<div style="display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;flex-wrap:wrap"><div><div class="serif" style="font-size:1.5rem">' + what(c) + '</div><div style="color:var(--muted)">' + esc(c.code) + '</div></div>' + status(expired ? 'expired' : c.status) + '</div>' +
+      '<dl class="kv">' +
+      (c.kind === 'montant' ? '<dt>Solde</dt><dd><strong>' + euros(c.balance_cents) + '</strong> sur ' + euros(c.amount_cents) + '</dd>' : '<dt>Valeur</dt><dd>' + euros(c.amount_cents) + ' · ' + esc(c.soin_duration) + '</dd>') +
+      '<dt>Pour</dt><dd>' + esc(c.recipient_name || '—') + (c.recipient_email ? ' · ' + esc(c.recipient_email) + (c.send_at ? ' (envoi le ' + dateFR(c.send_at) + ')' : '') : '') + '</dd>' +
+      '<dt>Acheteuse</dt><dd>' + esc(c.buyer_name) + ' · <a class="link" href="mailto:' + esc(c.buyer_email) + '">' + esc(c.buyer_email) + '</a></dd>' +
+      (c.message ? '<dt>Message</dt><dd><em>« ' + esc(c.message) + ' »</em></dd>' : '') +
+      '<dt>Achetée le</dt><dd>' + dateFR(c.paid_at || c.created_at, true) + (c.payment_mode === 'simule' ? ' <span class="status pending">paiement simulé</span>' : '') + '</dd>' +
+      '<dt>Expire le</dt><dd>' + dateFR(c.expires_at) + '</dd>' +
+      '<dt>Emails</dt><dd><small>acheteuse ' + (c.buyer_email_sent_at ? '✓' : '✕') + (c.recipient_email ? ' · destinataire ' + (c.recipient_email_sent_at ? '✓' : (c.send_at ? 'programmé' : '✕')) : '') + (c.reminder_sent_at ? ' · rappel ✓' : '') + '</small></dd>' +
+      '</dl>' +
+      '<div class="acts">' +
+      (canUse ? '<button class="act" id="useAll">Valider la carte (utilisée)</button>' : '') +
+      (canUse && c.kind === 'montant' ? '<input id="amt" type="number" min="1" step="1" placeholder="€" aria-label="Montant à débiter"><button class="act ghost" id="debit">Débiter ce montant</button>' : '') +
+      (recentUse ? '<button class="act ghost" id="undo">Annuler la dernière validation</button>' : '') +
+      (c.status === 'active' ? '<button class="act danger" id="cancel">Annuler la carte</button>' : '') +
+      '</div>' +
+      (hist.length ? '<div class="history"><strong>Historique</strong>' + hist.map(function (r) { return '<div>' + dateFR(r.redeemed_at, true) + ' — ' + euros(r.amount_cents) + ' <small>(' + esc(r.note || '') + ')</small></div>'; }).join('') + '</div>' : '');
+
+    $('back').addEventListener('click', function () { fromList ? renderList(fromList, listTitle) : listRecent(); });
+    async function act(fn, args, okMsg) {
+      var r = await sb.rpc(fn, args);
+      if (r.error) return info(r.error.message, 'error');
+      if (!r.data.ok) return info({ insufficient: 'Solde insuffisant.', too_late: 'Plus de 15 minutes : annulation impossible.', not_cancellable: 'Cette carte ne peut pas être annulée.', used: 'Carte déjà utilisée.', expired: 'Carte expirée.' }[r.data.reason] || r.data.reason, 'error');
+      info(okMsg, 'ok');
+      openCard(r.data.card, fromList, listTitle);
+    }
+    if ($('useAll')) $('useAll').addEventListener('click', function () { if (confirm('Valider cette carte ? Elle sera marquée comme utilisée.')) act('redeem_gift_card', { p_code: c.code }, 'Carte validée.'); });
+    if ($('debit')) $('debit').addEventListener('click', function () { var v = Math.round(Number($('amt').value) * 100); if (v > 0) act('debit_gift_card', { p_code: c.code, p_amount_cents: v }, euros(v) + ' débités.'); });
+    if ($('undo')) $('undo').addEventListener('click', function () { act('undo_redemption', { p_code: c.code }, 'Dernière validation annulée.'); });
+    if ($('cancel')) $('cancel').addEventListener('click', function () { if (confirm('Annuler définitivement cette carte ? (le remboursement se fait dans Stripe)')) act('cancel_gift_card', { p_code: c.code }, 'Carte annulée.'); });
+  }
+
+  sb.auth.getSession().then(function (r) { r.data.session ? showDash() : showLogin(); });
+})();
+</script>
+</body>
+</html>

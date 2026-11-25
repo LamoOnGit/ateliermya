@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte cadeau Head Spa, Kobido, drainage — Offrir un soin | L’Atelier Mya (91)</title>
+<meta name="description" content="Offrez un soin à L’Atelier Mya, institut de bien-être à Sainte-Geneviève-des-Bois : Head Spa, Kobido, drainage lymphatique, madérothérapie. Carte cadeau envoyée par email, valable 6 mois.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="<!--SITE-->/carte-cadeau.html">
+<link rel="icon" type="image/svg+xml" href="<!--FAVICON-->">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Offrir un soin — Carte cadeau L’Atelier Mya">
+<meta property="og:description" content="Head Spa, Kobido, drainage, madérothérapie : offrez un moment de bien-être, carte envoyée par email.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=1200&q=80&fm=webp&fit=crop">
+<meta property="og:locale" content="fr_FR">
+<meta name="theme-color" content="#FAF6F1">
+<!--FONTS-->
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/composants.css">
+<link rel="stylesheet" href="assets/cadeau.css">
+</head>
+<body>
+<!--LOCK-->
+<!--NAV-->
+<main>
+<section class="svc-hero svc-hero-simple" style="padding-bottom:2.5rem">
+  <div class="wrap">
+    <div>
+      <nav class="crumbs" aria-label="Fil d'Ariane"><a href="index.html">Accueil</a><span aria-hidden="true">/</span><span>Carte cadeau</span></nav>
+      <div class="eyebrow">Carte cadeau</div>
+      <h1>Offrez un moment <em>rien qu’à elle</em><small>Un soin ou un montant, envoyé par email, valable 6 mois</small></h1>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:1rem">
+  <div class="wrap">
+    <div id="cancelled" class="alert alert-info" hidden>Paiement annulé : aucun montant n’a été débité. Vous pouvez reprendre votre commande ci-dessous.</div>
+    <form id="giftForm" class="gift-wrap" novalidate>
+      <div>
+        <!-- 1. Quoi -->
+        <div class="gift-step">
+          <h2><span class="num">1</span>Que souhaitez-vous offrir ?</h2>
+          <p class="hint">Un soin précis fait toujours plus d’effet… mais un montant laisse le choix.</p>
+          <div class="seg" role="group" aria-label="Type de carte">
+            <button type="button" data-kind="soin" aria-pressed="true">Un soin</button>
+            <button type="button" data-kind="montant" aria-pressed="false">Un montant</button>
+          </div>
+          <div id="kindSoin">
+            <div class="chips" id="families" role="group" aria-label="Famille de soins"></div>
+            <div class="options" id="formules" role="radiogroup" aria-label="Soin à offrir"></div>
+          </div>
+          <div id="kindMontant" hidden>
+            <div class="amounts-grid" id="amounts" role="radiogroup" aria-label="Montant"></div>
+          </div>
+        </div>
+
+        <!-- 2. Pour qui -->
+        <div class="gift-step">
+          <h2><span class="num">2</span>Pour qui ?</h2>
+          <p class="hint">Facultatif : le prénom et votre message apparaissent sur la carte.</p>
+          <div class="field">
+            <label for="recipientName">Prénom de la personne</label>
+            <input id="recipientName" maxlength="60" autocomplete="off" placeholder="Camille">
+          </div>
+          <div class="field">
+            <label for="message">Votre message</label>
+            <textarea id="message" maxlength="240" placeholder="Joyeux anniversaire ! Prends soin de toi…"></textarea>
+            <div class="counter"><span id="msgCount">0</span> / 240</div>
+          </div>
+          <label class="check"><input type="checkbox" id="sendToRecipient"> Envoyer aussi la carte par email à la personne, à la date de mon choix</label>
+          <div id="recipientFields" hidden>
+            <div class="field-row">
+              <div class="field">
+                <label for="recipientEmail">Son email</label>
+                <input id="recipientEmail" type="email" maxlength="160" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="sendDate">Date d’envoi <small>(vide = tout de suite)</small></label>
+                <input id="sendDate" type="date">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Vous -->
+        <div class="gift-step">
+          <h2><span class="num">3</span>Vos coordonnées</h2>
+          <p class="hint">Vous recevez la carte et son QR code par email, même si elle est envoyée à quelqu’un d’autre.</p>
+          <div class="field-row">
+            <div class="field">
+              <label for="buyerName">Votre nom</label>
+              <input id="buyerName" required maxlength="80" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="buyerEmail">Votre email</label>
+              <input id="buyerEmail" type="email" required maxlength="160" autocomplete="email">
+            </div>
+          </div>
+          <div class="hp" aria-hidden="true"><label>Site web <input id="website" tabindex="-1" autocomplete="off"></label></div>
+        </div>
+      </div>
+
+      <!-- Récapitulatif -->
+      <aside class="summary">
+        <div class="summary-box">
+          <canvas id="preview" width="1000" height="600" aria-label="Aperçu de la carte cadeau"></canvas>
+          <div style="margin-top:1.2rem">
+            <div class="summary-line"><span>Carte</span><span id="sumTitle">—</span></div>
+            <div class="summary-line"><span>Validité</span><span>6 mois</span></div>
+            <div class="summary-line"><span>Envoi</span><span id="sumSend">Par email, immédiatement</span></div>
+          </div>
+          <div class="summary-total"><span>Total</span><b id="sumTotal">—</b></div>
+          <div id="formError" class="alert alert-error" role="alert" hidden></div>
+          <button type="submit" class="btn btn-primary btn-block" id="payBtn" disabled>Choisissez un soin</button>
+          <p class="secure">🔒 Paiement sécurisé par Stripe · CB, Apple Pay, Google Pay</p>
+          <p class="terms">Carte nominative, valable 6 mois à compter de l’achat, utilisable en une seule fois à L’Atelier Mya. Le jour du soin, le QR code reçu par email est scanné à l’institut. Non remboursable, non échangeable contre des espèces. Réservation sur Planity ou au 06 38 46 74 14 en indiquant le code.</p>
+        </div>
+      </aside>
+    </form>
+  </div>
+</section>
+</main>
+<!--FOOTER-->
+<script src="assets/config.js"></script>
+<script src="assets/catalogue.js"></script>
+<script src="lib/giftCardDraw.js"></script>
+<script>
+(function () {
+  var CAT = window.MYA_CATALOGUE;
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var params = new URLSearchParams(location.search);
+  if (params.get('annule')) $('cancelled').hidden = false;
+
+  var offrables = CAT.formules.filter(function (f) { return f.offrable; });
+  var state = { kind: 'soin', family: null, formuleId: null, amount: null };
+
+  // Pré-sélection depuis les pages soins (?f=head-spa-2 ou ?soin=kobido)
+  var pre = offrables.find(function (f) { return f.id === params.get('f'); });
+  state.family = pre ? pre.soin : (CAT.familles.some(function (x) { return x.slug === params.get('soin'); }) ? params.get('soin') : CAT.familles[0].slug);
+  if (pre) state.formuleId = pre.id;
+  if (params.get('montant') && CAT.montants.indexOf(Number(params.get('montant'))) >= 0) { state.kind = 'montant'; state.amount = Number(params.get('montant')); }
+
+  function renderFamilies() {
+    $('families').innerHTML = CAT.familles.filter(function (fa) { return offrables.some(function (f) { return f.soin === fa.slug; }); })
+      .map(function (fa) { return '<button type="button" class="chip" data-fam="' + fa.slug + '" aria-pressed="' + (fa.slug === state.family) + '">' + esc(fa.nom_court) + '</button>'; }).join('');
+    $('families').querySelectorAll('.chip').forEach(function (b) {
+      b.addEventListener('click', function () { state.family = b.dataset.fam; state.formuleId = null; renderFamilies(); renderFormules(); update(); });
+    });
+  }
+  function renderFormules() {
+    $('formules').innerHTML = offrables.filter(function (f) { return f.soin === state.family; }).map(function (f) {
+      return '<label class="opt"><input type="radio" name="formule" value="' + f.id + '"' + (f.id === state.formuleId ? ' checked' : '') + '>' +
+        '<span class="opt-name">' + esc(f.nom) + '<small>' + esc(f.duree) + (f.cure ? ' · programme' : '') + '</small></span>' +
+        '<span class="opt-price">' + f.prix + ' €</span></label>';
+    }).join('');
+    $('formules').querySelectorAll('input').forEach(function (r) { r.addEventListener('change', function () { state.formuleId = r.value; update(); }); });
+  }
+  function renderAmounts() {
+    $('amounts').innerHTML = CAT.montants.map(function (m) {
+      return '<label class="opt"><input type="radio" name="amount" value="' + m + '"' + (m === state.amount ? ' checked' : '') + '>' + m + ' €</label>';
+    }).join('');
+    $('amounts').querySelectorAll('input').forEach(function (r) { r.addEventListener('change', function () { state.amount = Number(r.value); update(); }); });
+  }
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.kind = b.dataset.kind;
+      document.querySelectorAll('.seg button').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      $('kindSoin').hidden = state.kind !== 'soin';
+      $('kindMontant').hidden = state.kind !== 'montant';
+      update();
+    });
+  });
+
+  $('message').addEventListener('input', function () { $('msgCount').textContent = this.value.length; update(); });
+  $('recipientName').addEventListener('input', update);
+  $('sendToRecipient').addEventListener('change', function () { $('recipientFields').hidden = !this.checked; update(); });
+  $('sendDate').addEventListener('change', update);
+  var today = new Date(); $('sendDate').min = today.toISOString().slice(0, 10);
+  var max = new Date(); max.setMonth(max.getMonth() + 3); $('sendDate').max = max.toISOString().slice(0, 10);
+
+  function selection() {
+    if (state.kind === 'soin') {
+      var f = offrables.find(function (x) { return x.id === state.formuleId; });
+      return f ? { title: f.nom + ' · ' + f.famille, total: f.prix, card: { kind: 'soin', soinName: f.nom, soinFamily: f.famille, soinDuration: f.duree } } : null;
+    }
+    return state.amount ? { title: 'Montant libre', total: state.amount, card: { kind: 'montant', amountCents: state.amount * 100 } } : null;
+  }
+
+  var ctx = $('preview').getContext('2d');
+  var fontsReady = (document.fonts && document.fonts.load) ? Promise.all([document.fonts.load('italic 500 52px Fraunces'), document.fonts.load('500 32px Fraunces')]) : Promise.resolve();
+  function drawPreview(sel) {
+    var data = Object.assign({ code: 'MYA-XXXX-XXXX', recipientName: $('recipientName').value.trim(), message: $('message').value.trim() },
+      sel ? sel.card : { kind: 'soin', soinName: 'Votre soin', soinFamily: 'L’Atelier Mya' });
+    fontsReady.then(function () { MyaGiftCard.draw(ctx, data, { serif: 'Fraunces, serif', sans: '"DM Sans", sans-serif' }); });
+  }
+
+  function update() {
+    var sel = selection();
+    $('sumTitle').textContent = sel ? sel.title : '—';
+    $('sumTotal').textContent = sel ? sel.total + ' €' : '—';
+    var d = $('sendDate').value;
+    $('sumSend').textContent = $('sendToRecipient').checked
+      ? (d ? 'À la personne le ' + new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) : 'À la personne, tout de suite')
+      : 'Par email, immédiatement';
+    $('payBtn').disabled = !sel;
+    $('payBtn').textContent = sel ? 'Payer ' + sel.total + ' € en toute sécurité' : (state.kind === 'soin' ? 'Choisissez un soin' : 'Choisissez un montant');
+    drawPreview(sel);
+  }
+
+  renderFamilies(); renderFormules(); renderAmounts();
+  document.querySelector('.seg button[data-kind="' + state.kind + '"]').click(); // affiche le bon onglet + met à jour
+
+  $('giftForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var err = $('formError'); err.hidden = true;
+    var sel = selection();
+    var buyerName = $('buyerName').value.trim(), buyerEmail = $('buyerEmail').value.trim();
+    var toRecipient = $('sendToRecipient').checked;
+    var recipientEmail = toRecipient ? $('recipientEmail').value.trim() : '';
+    function fail(m, field) { err.textContent = m; err.hidden = false; if (field) $(field).focus(); }
+    if (!sel) return fail('Choisissez ce que vous souhaitez offrir.');
+    if (!buyerName) return fail('Merci d’indiquer votre nom.', 'buyerName');
+    if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(buyerEmail)) return fail('Votre adresse email semble incorrecte.', 'buyerEmail');
+    if (toRecipient && !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(recipientEmail)) return fail('Indiquez l’email de la personne, ou décochez l’envoi.', 'recipientEmail');
+
+    var btn = $('payBtn'); btn.disabled = true; btn.textContent = 'Redirection vers le paiement…';
+    try {
+      var res = await fetch(MYA_CONFIG.functionsUrl + '/create-gift-card', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          kind: state.kind, formuleId: state.formuleId, amount: state.amount,
+          buyerName: buyerName, buyerEmail: buyerEmail,
+          recipientName: $('recipientName').value.trim(), message: $('message').value.trim(),
+          recipientEmail: recipientEmail, sendDate: toRecipient ? $('sendDate').value : '',
+          website: $('website').value
+        })
+      });
+      var out = await res.json().catch(function () { return {}; });
+      if (!res.ok || !out.url) throw new Error(out.error || 'Une erreur est survenue. Réessayez ou appelez l’institut au 06 38 46 74 14.');
+      try { window.plausible && window.plausible('Carte cadeau — paiement', { props: { type: state.kind, montant: String(sel.total) } }); } catch (x) {}
+      location.href = out.url;
+    } catch (ex) {
+      fail(ex.message);
+      update();
+    }
+  });
+})();
+</script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

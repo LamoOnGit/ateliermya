@@ -1,0 +1,405 @@
+{
+ "genere_le": "2026-11-25",
+ "montants": [
+  30,
+  50,
+  70,
+  90,
+  110,
+  130,
+  150
+ ],
+ "familles": [
+  {
+   "slug": "head-spa",
+   "nom": "Head Spa",
+   "nom_court": "Head Spa",
+   "url": "soins/head-spa.html"
+  },
+  {
+   "slug": "kobido",
+   "nom": "Kobido",
+   "nom_court": "Kobido",
+   "url": "soins/kobido.html"
+  },
+  {
+   "slug": "drainage-lymphatique",
+   "nom": "Drainage lymphatique brésilien",
+   "nom_court": "Drainage lymphatique",
+   "url": "soins/drainage-lymphatique.html"
+  },
+  {
+   "slug": "drainage-lymphatique-visage",
+   "nom": "Drainage lymphatique visage",
+   "nom_court": "Drainage visage",
+   "url": "soins/drainage-lymphatique-visage.html"
+  },
+  {
+   "slug": "drainage-jambes-legeres",
+   "nom": "Drainage jambes légères",
+   "nom_court": "Jambes légères",
+   "url": "soins/drainage-jambes-legeres.html"
+  },
+  {
+   "slug": "maderotherapie",
+   "nom": "Madérothérapie",
+   "nom_court": "Madérothérapie",
+   "url": "soins/maderotherapie.html"
+  },
+  {
+   "slug": "masque-led",
+   "nom": "Booster éclat & régénération (masque LED)",
+   "nom_court": "Masque LED",
+   "url": "soins/masque-led.html"
+  }
+ ],
+ "formules": [
+  {
+   "id": "head-spa-1",
+   "soin": "head-spa",
+   "famille": "Head Spa",
+   "nom": "Rituel Découverte",
+   "duree": "45 min",
+   "minutes": 45,
+   "prix": 70,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "detente"
+   ],
+   "desc": "Le rituel d’initiation, pensé pour découvrir le Head Spa et ressentir ses effets dès la première séance.",
+   "url": "soins/head-spa.html#formule-1",
+   "img": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "head-spa-2",
+   "soin": "head-spa",
+   "famille": "Head Spa",
+   "nom": "Rituel Prestige",
+   "duree": "1 h",
+   "minutes": 60,
+   "prix": 90,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "detente",
+    "visage"
+   ],
+   "desc": "Le Head Spa complété d’un modelage Kobido et d’un soin visage, pour un moment de détente intense et une chevelure sublimée.",
+   "url": "soins/head-spa.html#formule-2",
+   "img": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "head-spa-3",
+   "soin": "head-spa",
+   "famille": "Head Spa",
+   "nom": "Rituel Essentiel",
+   "duree": "1 h",
+   "minutes": 60,
+   "prix": 110,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "detente"
+   ],
+   "desc": "Une version 100 % naturelle et écoresponsable, pour allier beauté, bien-être et respect de la fibre capillaire.",
+   "url": "soins/head-spa.html#formule-3",
+   "img": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "head-spa-4",
+   "soin": "head-spa",
+   "famille": "Head Spa",
+   "nom": "Rituel Oriental",
+   "duree": "1 h",
+   "minutes": 60,
+   "prix": 110,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "detente"
+   ],
+   "desc": "Un voyage sensoriel aux notes orientales, autour du ghassoul, l’argile purifiante utilisée depuis des siècles au Maghreb.",
+   "url": "soins/head-spa.html#formule-4",
+   "img": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "head-spa-5",
+   "soin": "head-spa",
+   "famille": "Head Spa",
+   "nom": "Rituel Excellence",
+   "duree": "1 h 30",
+   "minutes": 90,
+   "prix": 130,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "detente",
+    "visage"
+   ],
+   "desc": "L’expérience ultime : détente profonde, beauté capillaire et éclat du visage réunis en un seul rituel.",
+   "url": "soins/head-spa.html#formule-5",
+   "img": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "kobido-1",
+   "soin": "kobido",
+   "famille": "Kobido",
+   "nom": "Modelage Kobido 30 min",
+   "duree": "30 min",
+   "minutes": 30,
+   "prix": 50,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "visage"
+   ],
+   "desc": "L’essentiel du Kobido pour un coup d’éclat immédiat. Parfait pour découvrir la technique.",
+   "url": "soins/kobido.html#formule-1",
+   "img": "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "kobido-2",
+   "soin": "kobido",
+   "famille": "Kobido",
+   "nom": "Modelage Kobido 1 h",
+   "duree": "1 h",
+   "minutes": 60,
+   "prix": 90,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "visage"
+   ],
+   "desc": "Le soin complet : le temps de travailler en profondeur chaque zone du visage, du cou et de la nuque.",
+   "url": "soins/kobido.html#formule-2",
+   "img": "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "kobido-3",
+   "soin": "kobido",
+   "famille": "Kobido",
+   "nom": "Kobido Signature",
+   "duree": "1 h 15",
+   "minutes": 75,
+   "prix": 110,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "visage",
+    "detente"
+   ],
+   "desc": "Le Kobido associé à un massage profond de la tête, de la nuque et des épaules, puis sublimé par le masque LED Nooance.",
+   "url": "soins/kobido.html#formule-3",
+   "img": "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "kobido-4",
+   "soin": "kobido",
+   "famille": "Kobido",
+   "nom": "Cure Kobido — 5 séances d’1 h",
+   "duree": "5 × 1 h",
+   "minutes": 300,
+   "prix": 400,
+   "cure": true,
+   "offrable": true,
+   "objectifs": [
+    "visage"
+   ],
+   "desc": "Les effets du Kobido se renforcent séance après séance. La cure permet d’installer des résultats durables : traits plus fermes, ovale redessiné, teint lumineux.",
+   "url": "soins/kobido.html#formule-4",
+   "img": "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "drainage-lymphatique-1",
+   "soin": "drainage-lymphatique",
+   "famille": "Drainage lymphatique",
+   "nom": "Drainage lymphatique corps",
+   "duree": "1 h",
+   "minutes": 60,
+   "prix": 90,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "silhouette",
+    "jambes",
+    "detente"
+   ],
+   "desc": "Le soin de référence : un drainage complet du corps, doux et rythmé, pour relancer la circulation et retrouver de la légèreté.",
+   "url": "soins/drainage-lymphatique.html#formule-1",
+   "img": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "drainage-lymphatique-2",
+   "soin": "drainage-lymphatique",
+   "famille": "Drainage lymphatique",
+   "nom": "Drainage corps + visage",
+   "duree": "1 h 30",
+   "minutes": 90,
+   "prix": 140,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "silhouette",
+    "visage",
+    "detente"
+   ],
+   "desc": "Le drainage du corps prolongé par un drainage du visage : une action globale pour dégonfler, affiner et illuminer dès la première séance.",
+   "url": "soins/drainage-lymphatique.html#formule-2",
+   "img": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "drainage-lymphatique-3",
+   "soin": "drainage-lymphatique",
+   "famille": "Drainage lymphatique",
+   "nom": "Cure 5 séances",
+   "duree": "5 × 1 h",
+   "minutes": 300,
+   "prix": 425,
+   "cure": true,
+   "offrable": true,
+   "objectifs": [
+    "silhouette",
+    "jambes"
+   ],
+   "desc": "Un programme pour désengorger le corps en profondeur : la silhouette s’affine progressivement et la légèreté s’installe.",
+   "url": "soins/drainage-lymphatique.html#formule-3",
+   "img": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "drainage-lymphatique-4",
+   "soin": "drainage-lymphatique",
+   "famille": "Drainage lymphatique",
+   "nom": "Cure 10 séances",
+   "duree": "10 × 1 h",
+   "minutes": 600,
+   "prix": 800,
+   "cure": true,
+   "offrable": true,
+   "objectifs": [
+    "silhouette",
+    "jambes"
+   ],
+   "desc": "Le programme intensif pour affiner significativement la silhouette et réduire durablement la rétention d’eau.",
+   "url": "soins/drainage-lymphatique.html#formule-4",
+   "img": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "drainage-lymphatique-visage-1",
+   "soin": "drainage-lymphatique-visage",
+   "famille": "Drainage visage",
+   "nom": "Drainage lymphatique visage",
+   "duree": "30 min",
+   "minutes": 30,
+   "prix": 70,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "visage"
+   ],
+   "desc": "Un drainage doux du visage, du cou et du décolleté pour décongestionner les tissus et réveiller l’éclat du teint.",
+   "url": "soins/drainage-lymphatique-visage.html#formule-1",
+   "img": "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "drainage-jambes-legeres-1",
+   "soin": "drainage-jambes-legeres",
+   "famille": "Jambes légères",
+   "nom": "Drainage jambes légères",
+   "duree": "45 min",
+   "minutes": 45,
+   "prix": 70,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "jambes"
+   ],
+   "desc": "Un drainage ciblé des pieds jusqu’aux hanches, pour soulager les jambes lourdes et relancer le drainage naturel du corps.",
+   "url": "soins/drainage-jambes-legeres.html#formule-1",
+   "img": "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "maderotherapie-1",
+   "soin": "maderotherapie",
+   "famille": "Madérothérapie",
+   "nom": "Madérothérapie — 1 zone",
+   "duree": "1 h",
+   "minutes": 60,
+   "prix": 85,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "silhouette"
+   ],
+   "desc": "Une séance ciblée sur la zone de votre choix : ventre et taille, cuisses et hanches, bras ou dos.",
+   "url": "soins/maderotherapie.html#formule-1",
+   "img": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "maderotherapie-2",
+   "soin": "maderotherapie",
+   "famille": "Madérothérapie",
+   "nom": "Cure 5 séances",
+   "duree": "5 × 1 h",
+   "minutes": 300,
+   "prix": 400,
+   "cure": true,
+   "offrable": true,
+   "objectifs": [
+    "silhouette"
+   ],
+   "desc": "Le format recommandé pour des résultats visibles sur la silhouette et la peau.",
+   "url": "soins/maderotherapie.html#formule-2",
+   "img": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "maderotherapie-3",
+   "soin": "maderotherapie",
+   "famille": "Madérothérapie",
+   "nom": "Cure 10 séances",
+   "duree": "10 × 1 h",
+   "minutes": 600,
+   "prix": 700,
+   "cure": true,
+   "offrable": true,
+   "objectifs": [
+    "silhouette"
+   ],
+   "desc": "Le programme complet pour transformer durablement l’aspect de la peau et la silhouette.",
+   "url": "soins/maderotherapie.html#formule-3",
+   "img": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "masque-led-1",
+   "soin": "masque-led",
+   "famille": "Masque LED",
+   "nom": "Booster éclat & régénération",
+   "duree": "20 min",
+   "minutes": 20,
+   "prix": 30,
+   "cure": false,
+   "offrable": true,
+   "objectifs": [
+    "visage"
+   ],
+   "desc": "Une séance de luminothérapie seule, pour un coup d’éclat express.",
+   "url": "soins/masque-led.html#formule-1",
+   "img": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=80&fm=webp&fit=crop"
+  },
+  {
+   "id": "masque-led-2",
+   "soin": "masque-led",
+   "famille": "Masque LED",
+   "nom": "En option après un soin",
+   "duree": "20 min",
+   "minutes": 20,
+   "prix": 15,
+   "cure": false,
+   "offrable": false,
+   "objectifs": [],
+   "desc": "Ajoutez le masque LED à la suite de n’importe quel soin pour en prolonger les effets.",
+   "url": "soins/masque-led.html#formule-2",
+   "img": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=80&fm=webp&fit=crop"
+  }
+ ]
+}

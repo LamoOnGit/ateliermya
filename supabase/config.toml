@@ -1,0 +1,18 @@
+# Réglages des fonctions Supabase (déploiement : supabase functions deploy)
+# Les fonctions sont appelées par le site public, par Stripe ou par pg_cron :
+# la vérification JWT Supabase est donc désactivée ; chaque fonction fait ses
+# propres contrôles (catalogue, signature Stripe, CRON_SECRET, jeton public).
+project_id = "gsriapmzlbyzmznkssrt"
+
+[functions.create-gift-card]
+verify_jwt = false
+[functions.stripe-webhook]
+verify_jwt = false
+[functions.gift-card-status]
+verify_jwt = false
+[functions.gift-card-cron]
+verify_jwt = false
+[functions.google-reviews]
+verify_jwt = false
+[functions.instagram-feed]
+verify_jwt = false
